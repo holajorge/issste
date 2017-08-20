@@ -1,0 +1,28 @@
+        .img{
+            width: 100%;
+            height: 98px;
+            background: url(../img/issste.jpg);          
+            background-position: center left;
+            background-size: 70%;
+            background-repeat: no-repeat;
+            
+        }
+
+        .time{
+            width: 85%;
+            height: 60px;
+            background: darkslateblue;
+            background-position: center left;
+            background-size: 80%;
+            background-repeat: no-repeat;
+            color: white;
+        }
+
+        .height{
+            height: 100px;
+        }
+
+        .video{
+            width: 100%;
+            height: 49vh;
+        }

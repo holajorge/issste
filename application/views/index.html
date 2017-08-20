@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ISSSTE</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+	<!-- Compiled and minified CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
+
+	<!-- Compiled and minified JavaScript -->
+
+
+	<style>
+		.footerssss{
+			width: 100%;
+			position: absolute;
+			font-size: 24px;
+			bottom: 0;
+		}
+
+		.slider .slides {
+			background-color: #fff;
+			margin: 0;
+			height: 400px;
+		}
+
+		.flotante{
+			width: 20%;
+			height: 18%;
+			display: block;
+			background-color: #0d47a1;
+			color: white;
+			position: fixed;
+			bottom: 10%;
+			left: 45%;
+			text-align: center;
+			border-radius: 10px;
+			font-size: 24px;
+			padding: 30px;
+		}
+
+		.flotante2{
+			width: 20%;
+			height: 18%;
+			display: block;
+			background-color: #0d47a1;
+			color: white;
+			position: fixed;
+			bottom: 10%;
+			left: 68%;
+			text-align: center;
+			border-radius: 10px;
+			font-size: 24px;
+			padding: 30px;
+		}
+	</style>
+
+
+</head>
+<body>
+
+	<nav class="transparent" style="height: 100px;">
+		<div class="nav-wrapper">
+			<div class="container">
+				<div class="row">
+					<div class="col s3">
+						<img src="logo.svg" class="responsive-img" alt="">
+					</div>
+					<div class="col s3 col offset-s6">
+						<div class="valign-wrapper" style="background-color: #0d47a1; height: 50px; margin-top: 25px;" >
+							<h5 id="liveclock" style="width: 100%; text-align: center; color: white; font-size: 35px;"></h5>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+
+	<div class="" style="margin-top: 50px;">
+		<div class="row">
+
+			<div class="col s4 offset-s1">
+				<div class="slider" style="margin-top: -20px;">
+					<ul class="slides">
+						<li>
+							<table class="striped">
+								<thead>
+									<tr class="center-align">
+										<th class="center-align">Nombre</th>
+										<th class="center-align">Apellido</th>
+										<th class="center-align">Triage</th>
+
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr>
+										<td class="center-align">Carlos</td>
+										<td class="center-align">Be</td>
+										<td class="center-align" style="background-color: red; width: 20%;"></td>
+
+									</tr>
+									<tr>
+										<td class="center-align">jorge</td>
+										<td class="center-align">francisco</td>
+										<td class="center-align" style="background-color: yellow; width: 20%;"></td>
+									</tr>
+									<tr>
+										<td class="center-align">Meneces</td>
+										<td class="center-align">del valle</td>
+										<td class="center-align" style="background-color: green; width: 20%;"></td>
+									</tr>
+									<tr>
+										<td class="center-align">Armando</td>
+										<td class="center-align">Martinez</td>
+										<td class="center-align" style="background-color: red; width: 20%;"></td>
+									</tr>
+									<tr>
+										<td class="center-align">Armando</td>
+										<td class="center-align">Martinez</td>
+										<td class="center-align" style="background-color: yellow; width: 20%;"></td>
+									</tr>
+									<tr>
+										<td class="center-align">Armando</td>
+										<td class="center-align">Martinez</td>
+										<td class="center-align" style="background-color: green; width: 20%;"></td>
+									</tr>
+
+								</tbody>
+							</table>
+						</li>
+						<li>
+							<table class="striped">
+								<thead>
+									<tr >
+										<th class="center-align">Nombre</th>
+										<th class="center-align">Apellido</th>
+										<th class="center-align">Triage</th>
+
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr class="center-align">
+										<td class="center-align">Hazael</td>
+										<td class="center-align">Mendez</td>
+										<td class="center-align" style="background-color: green; width: 20%;"></td>
+
+									</tr>
+									<tr>
+										<td class="center-align">Carlos</td>
+										<td class="center-align">Be</td>
+										<td class="center-align" style="background-color: red; width: 20%;"></td>
+
+									</tr>
+								</tbody>
+							</table>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+
+			<div class="col s6 valign-wrapper">
+				<video class="responsive-video" autoplay muted>
+					<source src="video.mp4" type="video/mp4">
+					</video>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<footer class="page-footer footerssss blue darken-4">
+		<div class="footer-copyright">
+			<div class="container">
+				SISTEMA DE URGENCIAS TRIAGE
+				<a class="grey-text text-lighten-4 right" href="#!">ISSSTE</a>
+			</div>
+		</div>
+	</footer>
+
+
+	<h4 class="flotante">
+		PACIENTE: <br>
+		Carlos Be Peraza
+	</h4>
+
+	<h4 class="flotante2">
+		CONSULTORIO: <br>
+		3
+	</h4>
+
+
+
+
+
+	<script language="JavaScript" type="text/javascript">
+		function show5(){
+			if (!document.layers&&!document.all&&!document.getElementById)
+				return
+
+			var Digital=new Date()
+			var hours=Digital.getHours()
+			var minutes=Digital.getMinutes()
+			var seconds=Digital.getSeconds()
+
+			var dn="PM"
+			if (hours<12)
+				dn="AM"
+			if (hours>12)
+				hours=hours-12
+			if (hours==0)
+				hours=12
+
+			if (minutes<=9)
+				minutes="0"+minutes
+			if (seconds<=9)
+				seconds="0"+seconds
+
+			myclock=hours+":"+minutes+":"+seconds+" "+dn+""
+			if (document.layers){
+				document.layers.liveclock.document.write(myclock)
+				document.layers.liveclock.document.close()
+			}
+			else if (document.all)
+				liveclock.innerHTML=myclock
+			else if (document.getElementById)
+				document.getElementById("liveclock").innerHTML=myclock
+			setTimeout("show5()",1000)
+		}
+
+
+		window.onload=show5
+	</script>
+
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			$('.slider').slider();
+			$('.slider').height('85');
+			$('.slides').height('372');
+			$('.slider').transition('9000');
+		});
+	</script>
+
+
+</body>
+</html>
