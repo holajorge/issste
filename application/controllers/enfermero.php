@@ -43,8 +43,8 @@ class Enfermero extends CI_Controller {
       $inicio = ($numeropagina -1)*$cantidad;
       $data = array(
      
-        "clientes" => $this->enfermero_model->buscar($buscar,$inicio,$cantidad),
-        "totalregistros" => count($this->enfermero_model->buscar($buscar)),
+        "clientes" => $this->enfermero_model->buscar(0, $buscar,$inicio,$cantidad),
+        "totalregistros" => count($this->enfermero_model->buscar(0, $buscar)),
         "cantidad" =>$cantidad
         
       );
@@ -61,8 +61,8 @@ public function EditarDerechohabiente()
       $inicio = ($numeropagina -1)*$cantidad;
       $data = array(
      
-        "clientes" => $this->enfermero_model->buscar_editar($buscar,$inicio,$cantidad),
-        "totalregistros" => count($this->enfermero_model->buscar($buscar)),
+        "clientes" => $this->enfermero_model->buscar_editar(0,$buscar,$inicio,$cantidad),
+        "totalregistros" => count($this->enfermero_model->buscar(0,$buscar)),
         "cantidad" =>$cantidad
         
       );
@@ -172,14 +172,14 @@ public function EditarDerechohabiente()
       'sexo'         => $sexo,
       'edad'         => $edad,
       'vigencia'      => $vigencia,
-      'tipo_paciente' => $tipo_paciente,
+      'id_tipo_paciente' => $tipo_paciente,
       'go' => $go,
-      'clasificacion' => $clasificacion ,
+      'id_clasificacion_paciente' => $clasificacion ,
       'folio'         => $folio,
       'descripcion'   => $descripcion,
       'fecha'         => $fecha,
       'hora_llegada'  => $hora,
-      'estado'        =>$estado,    
+      'id_estado'        =>$estado,    
       'id_paciente'   =>$id,
       // 'id_doctor'   =>$id_doctor
 

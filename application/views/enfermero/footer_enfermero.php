@@ -10,7 +10,7 @@
 <script src="<?php echo base_url();?>plantillas/js/enfermero/footer_registro.js"> </script>
 <script src="<?php echo base_url();?>plantillas/js/enfermero/footer_consultas.js"> </script>
 
-<script src="<?php echo base_url();?>plantillas/js/paginacion.js"></script>
+<!-- <script src="<?php echo base_url();?>plantillas/js/paginacion.js"></script> -->
 
 </body>
 </html>

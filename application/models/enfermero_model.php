@@ -50,50 +50,52 @@
      return false;
    }
   }
-/********meto que busca un derechohabiente en la tabla de pacientes depende que como lo requiera el enfermero*********/
-  public function buscar($buscar,$inicio = FALSE, $cantidadregistro = FALSE)
+
+/*********metodo que busca los derechohabientes para editar sus datos********/
+  public function buscar_editar($baja, $buscar,$inicio = FALSE, $cantidadregistro = FALSE)
   {
-    
-    $this->db->like("rfc",$buscar);  
-    $this->db->or_like("nombre", $buscar);
-    $this->db->or_like("ape_pate",$buscar);
-    $this->db->or_like("ape_mate",$buscar);
+    $this->db->select('id_paciente, nombre,ape_pate, ape_mate, edad, sexo, fecha_nacimiento, rfc, vigencia');
+    $this->db->from('pacientes');
+    $this->db->where('baja', $baja);
+    $this->db->like("rfc",$buscar);
+
     if ($inicio !== FALSE && $cantidadregistro !== FALSE) {
       $this->db->limit($cantidadregistro,$inicio);
     }
-    $consulta = $this->db->get("pacientes");
-     // $consulta = $this->db->query("SELECT * from pacientes where nombre like '%".$buscar."%' or ape_pate like '%".$buscar."%' or ape_mate like '%".$buscar."%' or rfc like '%".$buscar."%'");
+    $consulta = $this->db->get();
     return $consulta->result();
   }
-/*********metodo que busca los derechohabientes para editar sus datos********/
-  public function buscar_editar($buscar,$inicio = FALSE, $cantidadregistro = FALSE)
+/********meto que busca un derechohabiente en la tabla de pacientes depende que como lo requiera el enfermero*********/
+  public function buscar($baja, $buscar, $inicio = FALSE, $cantidadregistro = FALSE)
   {
-    
-    $this->db->like("rfc",$buscar);
-    $this->db->or_like("nombre",$buscar);
-    $this->db->or_like("ape_pate",$buscar);
-    $this->db->or_like("ape_mate",$buscar);
+     
+    $this->db->select('id_paciente, nombre,ape_pate, ape_mate, edad, sexo, fecha_nacimiento, rfc, vigencia');
+    $this->db->from('pacientes');
+    $this->db->where('baja', $baja);
+    $this->db->like('rfc', $buscar); 
+
     if ($inicio !== FALSE && $cantidadregistro !== FALSE) {
       $this->db->limit($cantidadregistro,$inicio);
     }
-    $consulta = $this->db->get("pacientes");
-     // $consulta = $this->db->query("SELECT * from pacientes where nombre like '%".$buscar."%' or ape_pate like '%".$buscar."%' or ape_mate like '%".$buscar."%' or rfc like '%".$buscar."%'");
+    $consulta = $this->db->get();
     return $consulta->result();
   }
 
 /********busca los derechohabientes para eliminarlos de la tabla de pacientes*********/
 
-  public function buscarEliminar($buscar,$inicio = FALSE, $cantidadregistro = FALSE)
+  public function buscarEliminar($baja, $buscar,$inicio = FALSE, $cantidadregistro = FALSE)
   {
-    
-    $this->db->like("rfc",$buscar);
-    $this->db->or_like("nombre",$buscar);
-    $this->db->or_like("ape_pate",$buscar);
-    $this->db->or_like("ape_mate",$buscar);
-    if ($inicio !== FALSE && $cantidadregistro !== FALSE) {
-      $this->db->limit($cantidadregistro,$inicio);
+   
+    $this->db->select('id_paciente, nombre,ape_pate, ape_mate, edad, sexo, fecha_nacimiento, rfc, vigencia');
+    $this->db->from('pacientes');
+    $this->db->like('rfc',$buscar ); 
+    $this->db->where('baja', $baja);
+
+    if ($inicio !== FALSE && $cantidadregistro !== FALSE) {      
+        $this->db->limit($cantidadregistro,$inicio);
     }
-    $consulta = $this->db->get("pacientes");
+
+    $consulta = $this->db->get();
      // $consulta = $this->db->query("SELECT * from pacientes where nombre like '%".$buscar."%' or ape_pate like '%".$buscar."%' or ape_mate like '%".$buscar."%' or rfc like '%".$buscar."%'");
     return $consulta->result();
   }

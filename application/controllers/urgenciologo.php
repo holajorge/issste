@@ -400,7 +400,7 @@ echo $html;
         $id_consulta_paciente= $this->input->post('id_consulta_paciete');
         $data = array(
             'id_doctor'   => $this->input->post('id_doctor'), 
-            'id_consulta_paciete'   => $this->input->post('id_consulta_paciete'),
+            'id_consulta_paciente'   => $this->input->post('id_consulta_paciete'),
             'descripcion' => $this->input->post('descripcion'),
             'hora_atendido' => $hora,
             'tiempo' => $this->input->post('hora_llegada')
@@ -460,8 +460,8 @@ public function eliminar()
           );
 
           $this->pacientes_model->insertConsultaFaltantes($faltantes);
-
-         $this->pacientes_model->eliminarConsultaEspera($id);
+          $baja = "1";
+         $this->pacientes_model->eliminarConsultaEspera(3, $id, $baja);
     
           redirect('urgenciologo');
           return true;
@@ -490,10 +490,19 @@ public function eliminar()
   {
             $nombre= $this->input->post('nombre');
             $apellido=$this->input->post('apellido');
-            $consultorio = $this->session->userdata('consultorio');
+            $consultorio = $this->session->userdata('id_consultorio');
             $time = time();
-          $fechaActual=date("Y-m-d",$time);
-            $this->pacientes_model->monitoreollamadaInsert($nombre,$apellido,$consultorio,$fechaActual);
+            $fechaActual=date("Y-m-d",$time);
+
+            $data = array(
+
+              'nombre' => $nombre,
+              'apellido' => $apellido,
+              'id_consultorio' => $consultorio,
+              'fecha' => $fechaActual      
+            );
+
+            $this->pacientes_model->monitoreollamadaInsert($data);
   }
 
 /******METODO PARA CARGAR LOS DATOS QUE LOS PACIENTES QUE YA ESTAN ATENDIDOS POR DIA*******/
@@ -505,6 +514,7 @@ public function eliminar()
       date_default_timezone_set('America/Cancun');
         $time = time();
         $fecha=date("Y-m-d",$time);
+        // $fecha = "2017-08-17";
         $hora=date("H:i:s",$time);
 
      $consultaa= $this->pacientes_model->get_consultados_hoy($doct, $fecha);

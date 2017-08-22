@@ -6,7 +6,10 @@
       <li><a href="<?php echo base_url();?>doctor/atender" style="display: none">ATENDIENDO DERECHOHABIENTE</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-     <li><a href="#"><span class="glyphicon glyphicon-user"></span><?php echo " ".$nombre.' '.$apellido; ?></a></li>
+     <li><a href="#">
+      <span class="glyphicon glyphicon-user"></span>
+        <?php echo " ".$nombre.' '.$apellido; ?></a>
+      </li>
       <li><a href="<?php echo base_url();?>login/cerrar_sesion"><span class="glyphicon glyphicon-log-in"></span>Salir</a></li>
     </ul>
   </div>

@@ -16,8 +16,7 @@
     <div class="row">
 
        <div class="col s12 m6 l6" style="height: 80vh;">
-
-
+       
           <h5 class="center-align" style="background: darkslateblue; color: white; margin-bottom: 0%;">EN ESPERA...</h5>
           <!-- aqui tabla -->
           <div  id="conta">

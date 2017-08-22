@@ -38,7 +38,7 @@
         <input disabled type="text" id="nombre<?php echo $data['id_consulta_paciente']?>"  value="<?php echo $data['nombre']?>" readonly />
       </div> 
       <div class="form-group">
-         <strong>NOMBRE</strong> 
+         <strong>APELLIDO</strong> 
         <input disabled type="text" id="nombre<?php echo $data['id_consulta_paciente'] ?>" value="<?php echo $data['apellido']?>"/>
         <div class="validation"></div>
       </div>

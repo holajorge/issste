@@ -12,13 +12,13 @@ class Crudperfiles_model extends CI_Model {
 // va dirijido al doctor con la finalidad de que no se petitan nombres 
  public function getUserExist($username)
  {
-      $query= $this->db->query("select * from doctor where username='".$username."'");
-       
+    $query= $this->db->query("select * from doctor where username='".$username."'");
       
     if ($query -> num_rows() > 0){
       return true;
     }else{
      return false;
+
     }
  }
 
@@ -65,56 +65,61 @@ class Crudperfiles_model extends CI_Model {
 
 // este metodo compreba la exisistencia del nombre de usuario y contraseña de cada usuairo de sistema
 
-public function usuario_por_usuario_password($username , $password)
+public function autentificarAdmin($username , $password)
   {
-      $this->db->select('id_enfermero, nombre, apellido,tipo_usuario');
-      $this->db->from('enfermero');
-      $this->db->where('username', $username);
-      $this->db->where('password', $password);
-      $consulta = $this->db->get();
+     $query = $this->db->query("
+        SELECT id_administrador, nombre, apellido, administrador.tipo_usuario 
+        from users, administrador 
+        where users.tipo_usuario = administrador.tipo_usuario and administrador.username = '".$username."' and  administrador.password = '".$password."' ");
+
+      $consulta = $query;
+
       $resultado = $consulta->row();
       if($resultado){
         return $resultado;  
     }else{
-        return $this->login_doctor($username,$password);
+        return $this->loginDoctor($username,$password);
     }
     
 }
 
 // en el codigo enterio ejecuta un salto de metodo si no encontro  los datos en una tabla busca en otras 
 
-public function login_doctor($username , $password)
+public function loginDoctor($username , $password)
 {
-  $this->db->select('id_doctor, nombre, apellido, id_consultorio, tipo_usuario');
-  $this->db->from('doctor');
-  $this->db->where('username', $username);
-  $this->db->where('password', $password);
-  $consulta = $this->db->get();
+  $query = $this->db->query("
+        SELECT doctor.id_doctor, doctor.nombre, apellido, doctor.tipo_usuario, doctor.id_consultorio 
+        from users, doctor , consultorio 
+        where users.tipo_usuario = doctor.tipo_usuario and doctor.username = '".$username."' and  doctor.password = '".$password."' and doctor.id_consultorio=consultorio.id_consultorio ");
+
+      $consulta = $query;
   $resultado = $consulta->row();
 
   if($resultado){
     return $resultado;  
 }else{
-    return $this->login_admin($username,$password);
+    return $this->loginEnfermero($username,$password);
 }
 
 }
 
 // en el codigo enterio ejecuta un salto de metodo si no encontro  los datos en una tabla busca en otras 
-public function login_admin($username , $password)
+public function loginEnfermero($username , $password)
 {
-  $this->db->select('id_administrador, nombre, apellido, tipo_usuario');
-  $this->db->from('administrador');
-  $this->db->where('username', $username);
-  $this->db->where('password', $password);
-  $consulta = $this->db->get();
+   $query = $this->db->query("
+        SELECT id_enfermero, nombre, apellido, enfermero.tipo_usuario 
+        from users, enfermero 
+        where users.tipo_usuario = enfermero.tipo_usuario and enfermero.username = '".$username."' and  enfermero.password = '".$password."' ");
+
+      $consulta = $query;
+
   $resultado = $consulta->row();
 
   if($resultado){
     return $resultado;  
-}else{
-    return false;
-}
+  }else{
+      return false;
+  }
 
 }
 
@@ -152,10 +157,15 @@ public function eliminarDoctor($id)
 
 }
 
-public function eliminarDerechohabiente($id)
+public function eliminarDerechohabiente($baja, $id)
 {
+
+  $data = array(
+    'baja' => $baja,
+    );
+
   $this->db->where('id_paciente', $id);
-  return $this->db->delete('pacientes'); 
+  return $this->db->update('pacientes', $data); 
 
 }
 
@@ -381,7 +391,15 @@ VISTA UTILIZADA: VISTA DE MODIFICACION UN DOCTOR
  public function obtenerReporteFechas($data, $data1)
     {       
 
-     $query= $this->db->query("SELECT cp.nombre, cp.apellido_paterno, cp.apellido_materno,cp.sexo, cp.rfc,cp.vigencia, tp.tipo, cp.go, cfp.clasificacion, cp.folio, cp.fecha, cp.hora_llegada,pc.tiempo, pc.hora_atendido, d.nombre as doctor,c.nombre as consultorio FROM consulta_paciente AS cp ,pacientes_consultados AS pc,doctor as d, consultorio as c, clasificacion_paciente as cfp,tipo_paciente as tp WHERE cp.id_consulta_paciente = pc.id_consulta_paciete  AND cp.fecha>='".$data."' AND cp.fecha<='".$data1."' AND d.id_doctor=pc.id_doctor and d.id_consultorio=c.id_consultorio and tp.id_tipo_paciente=cp.tipo_paciente and cfp.id_clasificacion_paciente=cp.clasificacion");
+     $query= $this->db->query("
+
+      SELECT cp.nombre, cp.apellido_paterno, cp.apellido_materno,cp.sexo, cp.rfc,cp.vigencia, tp.tipo, cp.go, cfp.clasificacion, cp.folio, cp.fecha, cp.hora_llegada,pc.tiempo, pc.hora_atendido, d.nombre as doctor,c.nombre as consultorio 
+
+      FROM consulta_paciente AS cp ,pacientes_consultados AS pc,doctor as d, consultorio as c, clasificacion_paciente as cfp,tipo_paciente as tp 
+
+      WHERE cp.id_consulta_paciente = pc.id_consulta_paciente  AND cp.fecha>='".$data."' AND cp.fecha<='".$data1."' AND d.id_doctor=pc.id_doctor and d.id_consultorio=c.id_consultorio and tp.id_tipo_paciente=cp.id_tipo_paciente and cfp.id_clasificacion_paciente=cp.id_clasificacion_paciente
+
+      ");
        
      return $query;
     }
@@ -389,7 +407,13 @@ VISTA UTILIZADA: VISTA DE MODIFICACION UN DOCTOR
  public function obtenerReporteFechas_faltantes($data, $data1)
     {       
 
-     $query= $this->db->query("SELECT ft.nombre, ft.apellido, ft.rfc, tp.tipo,  cfp.clasificacion, ft.hora_llegada, ft.hora_baja, ft.fecha, d.nombre as doctor, ct.nombre as consultorio from faltantes ft, doctor d, consultorio ct, clasificacion_paciente as cfp,tipo_paciente as tp where ft.id_doctor=d.id_doctor and ft.fecha>='".$data."'  and ft.fecha<='".$data1."'  and d.id_consultorio=ct.id_consultorio and tp.id_tipo_paciente=ft.tipo_paciente and cfp.id_clasificacion_paciente=ft.clasificacion");
+     $query= $this->db->query("
+      SELECT ft.nombre, ft.apellido, ft.rfc,  cfp.clasificacion, ft.hora_llegada, ft.hora_baja, ft.fecha, d.nombre as doctor, ct.nombre as consultorio 
+
+      from faltantes ft, doctor d, consultorio ct, clasificacion_paciente as cfp,tipo_paciente as tp
+
+      where ft.id_doctor=d.id_doctor and ft.fecha>='".$data."'  and ft.fecha<='".$data1."'  and d.id_consultorio=ct.id_consultorio and tp.tipo=ft.tipo_paciente and cfp.id_clasificacion_paciente=ft.clasificacion
+      ");
        
      return $query;
     }
@@ -397,7 +421,14 @@ VISTA UTILIZADA: VISTA DE MODIFICACION UN DOCTOR
    /* Devuelve la lista de derechohabientes que un doctor atendio en un determinado rango de fechas */
  public function reporteDoctor($doc,$date1,$date2)
     {
-      $query= $this->db->query("SELECT cp.nombre, cp.apellido_paterno,cp.apellido_materno, cp.sexo,cp.rfc,cp.vigencia, tp.tipo, cp.go, cfp.clasificacion, cp.folio,cp.fecha, cp.hora_llegada,pc.tiempo, pc.hora_atendido, d.nombre as doctor,c.nombre as consultorio FROM consulta_paciente AS cp ,pacientes_consultados AS pc,doctor as d, consultorio as c, clasificacion_paciente as cfp,tipo_paciente as tp WHERE cp.id_consulta_paciente = pc.id_consulta_paciete  AND cp.fecha>='".$date1."' AND cp.fecha<='".$date2."' AND d.id_doctor=pc.id_doctor and d.id_consultorio=c.id_consultorio and tp.id_tipo_paciente=cp.tipo_paciente and cfp.id_clasificacion_paciente=cp.clasificacion and pc.id_doctor=".$doc."");
+      $query= $this->db->query("
+
+        SELECT cp.nombre, cp.apellido_paterno,cp.apellido_materno, cp.sexo,cp.rfc,cp.vigencia, tp.tipo, cp.go, cfp.clasificacion, cp.folio,cp.fecha, cp.hora_llegada,pc.tiempo, pc.hora_atendido, d.nombre as doctor,c.nombre as consultorio 
+
+        FROM consulta_paciente AS cp ,pacientes_consultados AS pc,doctor as d, consultorio as c, clasificacion_paciente as cfp,tipo_paciente as tp 
+
+        WHERE cp.id_consulta_paciente = pc.id_consulta_paciente  AND cp.fecha>='".$date1."' AND cp.fecha<='".$date2."' AND d.id_doctor=pc.id_doctor and d.id_consultorio=c.id_consultorio and tp.id_tipo_paciente=cp.id_tipo_paciente and cfp.id_clasificacion_paciente=cp.id_clasificacion_paciente and pc.id_doctor=".$doc."
+        ");
      return $query;
     }
 
@@ -422,7 +453,7 @@ VISTA UTILIZADA: VISTA DE MODIFICACION UN DOCTOR
    {
        
     $query = $this->db->query("
-      SELECT ROUND(((select count(*) from consulta_paciente , pacientes_consultados pc where clasificacion=1 and estado=3 and  pc.id_consulta_paciete = consulta_paciente.id_consulta_paciente and Month(consulta_paciente.fecha)=".$month." && year(fecha)=".$year." ) * 100 ) / (select count(*)  from consulta_paciente )) as resultado ");
+      SELECT ROUND(((select count(*) from consulta_paciente , pacientes_consultados pc where id_clasificacion_paciente=1 and id_estado=3 and  pc.id_consulta_paciente = consulta_paciente.id_consulta_paciente and Month(consulta_paciente.fecha)=".$month." && year(fecha)=".$year." ) * 100 ) / (select count(*)  from consulta_paciente )) as resultado ");
 
       return $query;
           
@@ -432,7 +463,7 @@ VISTA UTILIZADA: VISTA DE MODIFICACION UN DOCTOR
    {
        
     $query = $this->db->query("
-      SELECT ROUND(((select count(*) from consulta_paciente , pacientes_consultados pc where clasificacion=2 and estado=3 and  pc.id_consulta_paciete = consulta_paciente.id_consulta_paciente and Month(consulta_paciente.fecha)=".$month." && year(fecha)=".$year." ) * 100 ) / (select count(*)  from consulta_paciente )) as resultado ");
+      SELECT ROUND(((select count(*) from consulta_paciente , pacientes_consultados pc where id_clasificacion_paciente=2 and id_estado=3 and  pc.id_consulta_paciente = consulta_paciente.id_consulta_paciente and Month(consulta_paciente.fecha)=".$month." && year(fecha)=".$year." ) * 100 ) / (select count(*)  from consulta_paciente )) as resultado ");
 
         return $query;
           
@@ -441,7 +472,7 @@ VISTA UTILIZADA: VISTA DE MODIFICACION UN DOCTOR
    {
        
     $query = $this->db->query("
-      SELECT ROUND(((select count(*) from consulta_paciente , pacientes_consultados pc where clasificacion=3 and estado=3 and  pc.id_consulta_paciete = consulta_paciente.id_consulta_paciente and Month(consulta_paciente.fecha)=".$month." && year(fecha)=".$year." ) * 100 ) / (select count(*)  from consulta_paciente )) as resultado ");
+      SELECT ROUND(((select count(*) from consulta_paciente , pacientes_consultados pc where id_clasificacion_paciente=3 and id_estado=3 and  pc.id_consulta_paciente = consulta_paciente.id_consulta_paciente and Month(consulta_paciente.fecha)=".$month." && year(fecha)=".$year." ) * 100 ) / (select count(*)  from consulta_paciente )) as resultado ");
 
         return $query;
           
@@ -474,11 +505,11 @@ VISTA UTILIZADA: VISTA DE MODIFICACION UN DOCTOR
    {
 
     $query = $this->db->query("
-     SELECT round(((select count(clasificacion))/ (select count(clasificacion) from consulta_paciente))*100 )as porcentaje
+     SELECT round(((select count(id_clasificacion_paciente))/ (select count(id_clasificacion_paciente) from consulta_paciente))*100 )as porcentaje
      FROM consulta_paciente  
-     where estado =3  and clasificacion in('1','2','3') and year(fecha)=".$year."
-      group by clasificacion
-      order by clasificacion ");
+     where id_estado =3  and id_clasificacion_paciente in('1','2','3') and year(fecha)=".$year."
+      group by id_clasificacion_paciente
+      order by id_clasificacion_paciente ");
 
     return $query->result();
    }

@@ -11,7 +11,6 @@ class Pantalla_model extends CI_Model {
     public function consul_pacientes()
     {
        $query = $this->db->query('SELECT nombre,apellido_paterno,tipo_paciente from consulta_paciente where estado=1 order by tipo_paciente desc');
-
       if ($query -> num_rows() > 0){
           return $query;
       }else{
@@ -22,8 +21,8 @@ class Pantalla_model extends CI_Model {
      public function getMonitoreoMaximo()
     {
 //select * from monitoreollamadas where id=(SELECT max(id) from monitoreollamadas)
-       $query = $this->db->query('SELECT monitoreollamadas.nombre, monitoreollamadas.apellido, consultorio.nombre as consultorio from monitoreollamadas, consultorio where monitoreollamadas.consultorio=consultorio.id_consultorio   and   id=(SELECT max(id)  from monitoreollamadas) ');
-
+       $query = $this->db->query('SELECT monitoreollamadas.nombre, monitoreollamadas.apellido, consultorio.nombre as consultorio from monitoreollamadas, consultorio where monitoreollamadas.id_consultorio=consultorio.id_consultorio   and   id=(SELECT max(id)  from monitoreollamadas) ');
+       
       if ($query -> num_rows() > 0){
           return $query->result();
       }else{
@@ -34,7 +33,6 @@ class Pantalla_model extends CI_Model {
     public function verificaFecha()
     {
       $query = $this->db->query('select fecha from monitoreollamadas where id=(select max(id) from monitoreollamadas)');
-
         if ($query -> num_rows() > 0){
           return $query->result()[0]->fecha;
         }else{
@@ -47,22 +45,27 @@ class Pantalla_model extends CI_Model {
       return $this->db->query("truncate table monitoreollamadas ");
   
     }
-    /*******metodo **********/
+    /*******metodo que muestra los derechohabientes en la pantalla de espera**********/
+
      public function consul_pacientes2()
       {
-         $query = $this->db->query('SELECT nombre,apellido_paterno,clasificacion from consulta_paciente where estado=1 order by clasificacion desc , hora_llegada asc');
-
+         $query = $this->db->query('
+          SELECT nombre,apellido_paterno,id_clasificacion_paciente as clasificacion
+          from consulta_paciente
+           where id_estado=1 
+           order by id_clasificacion_paciente desc , hora_llegada asc');
+        
         if ($query -> num_rows() > 0){
             return $query;
         }else{
          return false;
         }
       }
+
   /*******metodo se imprime todo los datos de los pacientes que esten en espera**********/
     public function paciente_espera()
       {
-         $query = $this->db->query('SELECT nombre,apellido_paterno,tipo_paciente from consulta_paciente where estado=1 order by tipo_paciente desc');
-
+         $query = $this->db->query(' SELECT nombre,apellido_paterno,id_tipo_paciente from consulta_paciente where id_estado=1 order by id_tipo_paciente desc');
         if ($query -> num_rows() > 0){
             return $query;
         }else{
@@ -73,7 +76,6 @@ class Pantalla_model extends CI_Model {
   public function monitoreollamadasTotal()
   {
     $query = $this->db->query('SELECT * from monitoreollamadas');
-
           if ($query -> num_rows() > 0){
               return $query -> num_rows();
           }else{
@@ -84,19 +86,16 @@ class Pantalla_model extends CI_Model {
     public function count()
       {
         $query = $this->db->query('SELECT * from paciente_espera');
-
         if ($query -> num_rows() > 0){
             return $query -> num_rows();
         }else{
          return 0;
         }
       }
-
       //VER QUE NO SUENE PARA CUENDO LO CONSULTEN
       public function countPacientesConsultados()
       {
         $query = $this->db->query('SELECT * from pacientes_consultados');
-
         if ($query -> num_rows() > 0){
             return $query -> num_rows();
         }else{
@@ -107,24 +106,27 @@ class Pantalla_model extends CI_Model {
       public function count_consulta_paciente()
       {
         $query = $this->db->query('SELECT MAX(id_consulta_paciente) id from consulta_paciente');
-
         if ($query -> num_rows() > 0){
           return $query->result()[0]->id;
         }else{
          return false;
         }
       }
-//id_espera = (SELECT MAX(id_espera) FROM paciente_espera)
+
     public function muestra_consulta()
     {
-      $query = $this->db->query('SELECT consulta_paciente.nombre,consulta_paciente.apellido_paterno, consultorio.nombre as consultorio  FROM paciente_espera, consultorio, consulta_paciente, doctor WHERE consulta_paciente.estado=2 and paciente_espera.id_consulta_paciente=consulta_paciente.id_consulta_paciente and doctor.id_doctor = paciente_espera.id_doctor and doctor.id_doctor=consultorio.id_consultorio and id_espera = (SELECT MAX(id_espera) FROM paciente_espera)');
-
+      $query = $this->db->query(' 
+      SELECT cp.nombre,cp.apellido_paterno, ct.nombre as consultorio  
+      FROM paciente_espera ps, consultorio ct, consulta_paciente cp, doctor 
+      WHERE cp.id_estado=2 and ps.id_consulta_paciente=cp.id_consulta_paciente 
+        and doctor.id_doctor = ps.id_doctor and doctor.id_doctor=ct.id_consultorio 
+        and id_espera = (SELECT MAX(id_espera) FROM paciente_espera)');
+      
       if ($query -> num_rows() > 0){
-          return $query;
+        return $query;
       }else{
-       return false;
+        return false;
       }
     }
-
 }
 ?>

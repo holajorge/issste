@@ -28,7 +28,6 @@ class Admin extends CI_Controller {
 
    }
 
-
  /*
   CRUD DOCTOR
   modelo que ocupa para consultas
@@ -575,6 +574,7 @@ public function videos()
     $datos['arrConsul'] = $this->crudperfiles_model->get_consultorio_select();
     //LLENAR EL SECT PARA IMPLIMIR REPORTE DOCTOR
     $datos['arrConsulDoctor'] = $this->crudperfiles_model->get_doctor_select();
+    
     $datos['consulta'] = $this->pacientes_model->get_pacientesVistaenfermero();
     $datos['base']=base_url();
     $datos['nombre'] = $this->session->userdata('nombre');
@@ -601,12 +601,12 @@ public function videos()
     <table class="table table-bordered">
     <thead>
      <tr>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;" >NOMBRE</th>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;" >APELLIDO</th>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;" >TIPO PACIENTE</th>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">CLASIFICACIÓN</th>     
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">DESCRIPCIÓN</th>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">TIEMPO ESPERA</th>      
+      <th class="doctor_tabla" >NOMBRE</th>
+      <th class="doctor_tabla" >APELLIDO</th>
+      <th class="doctor_tabla" >TIPO PACIENTE</th>
+      <th class="doctor_tabla" >CLASIFICACIÓN</th>     
+      <th class="doctor_tabla" >DESCRIPCIÓN</th>
+      <th class="doctor_tabla" >TIEMPO ESPERA</th>      
      </tr>
     </thead>
 
@@ -715,14 +715,13 @@ LOCALIZAR UN DERECHOHABIENTE*******/
 
       <thead>
        <tr>
-        <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;" >NOMBRE</th>
-        <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;" >APELLIDO</th>
-        <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;" >TIPO PACIENTE</th>
-        <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">CLASIFICACIÓN</th>
-       <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">DESCRIPCIÓN</th>
-        <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">DOCTOR</th>
-        <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">CONSULTORIO</th>
-        
+        <th class="doctor_tabla" >NOMBRE</th>
+        <th class="doctor_tabla" >APELLIDO</th>
+        <th class="doctor_tabla" >TIPO PACIENTE</th>
+        <th class="doctor_tabla" >CLASIFICACIÓN</th>
+        <th class="doctor_tabla" >DESCRIPCIÓN</th>
+        <th class="doctor_tabla" >DOCTOR</th>
+        <th class="doctor_tabla" >CONSULTORIO</th>        
        </tr>
       </thead>
 
@@ -740,28 +739,14 @@ LOCALIZAR UN DERECHOHABIENTE*******/
           <input type="hidden" name="hora_llegada"   id="hora_llegada'.$fila->id_consulta_paciente.'" value="'.$fila->doctor.'">  
           <th ><label>'.$fila->nombre.'</label></th>                
           <th ><label>'.$fila->apellido_paterno.'</label></th>';                   
-          $tipoP = $fila->tipo_paciente;
-          if ($tipoP == 1) {
-            $html= $html.'
-            <th class="text-center">
-              <label  name=\"tipo_paciente\" id=\"tipo_paciente"'.$fila->id_consulta_paciente.'"\" value=\"niño\">NIÑO</label>
-            </th>';
-          }elseif($tipoP==2){
-            $html= $html.'
-            <th class="text-center">
-              <label  name=\"tipo_paciente\" id=\"tipo_paciente"'.$fila->id_consulta_paciente.'"\">JOVEN</label>
-            </th>';
-             }elseif($tipoP==3){
-            $html= $html.'
-            <th class="text-center">
-              <label  name=\"tipo_paciente\" id=\"tipo_paciente"'.$fila->id_consulta_paciente.'"\">ADULTO</label>
-            </th>';
-          }elseif ($tipoP==4) {
-            $html= $html.'
-            <th class="text-center">
-              <label  name=\"tipo_paciente\" id=\"tipo_paciente"'.$fila->id_consulta_paciente.'"\">G-O</label>
-            </th>';
-          }                
+          $global;         
+          $tipoP = $fila->go; 
+          if ($tipoP == 1 ) {
+                $global = " / GO";
+              }else{
+                $global = "";
+              }    
+        $html = $html.' <th class="text-center"><label>'.$fila->tipo.$global.'</label></th> ';              
           $clasifica=$fila->clasificacion;
           if($clasifica==1){
             $html= $html.'
@@ -835,15 +820,15 @@ LOCALIZAR UN DERECHOHABIENTE*******/
       
       <thead>
        <tr>
-       <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;" >NOMBRE</th>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;" >APELLIDO</th>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;" >TIPO PACIENTE</th>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">CLASIFICACIÓN</th>
-        <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">RFC</th>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">HORA LLEGADA</th>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">HORA BAJA</th>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">DOCTOR</th>
-      <th class="text-center" style="font-family: Areal; background-color: #bfbfbf;">CONSULTORIO</th>
+        <th class="doctor_tabla" >NOMBRE</th>
+        <th class="doctor_tabla" >APELLIDO</th>
+        <th class="doctor_tabla" >TIPO PACIENTE</th>
+        <th class="doctor_tabla" >CLASIFICACIÓN</th>
+        <th class="doctor_tabla" >RFC</th>
+        <th class="doctor_tabla" >HORA LLEGADA</th>
+        <th class="doctor_tabla" >HORA BAJA</th>
+        <th class="doctor_tabla" >DOCTOR</th>
+        <th class="doctor_tabla" >CONSULTORIO</th>
        </tr>
       </thead>
 
@@ -964,20 +949,21 @@ LOCALIZAR UN DERECHOHABIENTE*******/
       $inicio = ($numeropagina -1)*$cantidad;
       $data = array(
      
-        "clientes" => $this->enfermero_model->buscarEliminar($buscar,$inicio,$cantidad),
-        "totalregistros" => count($this->enfermero_model->buscar($buscar)),
+        "clientes" => $this->enfermero_model->buscarEliminar(0,$buscar,$inicio,$cantidad),
+        "totalregistros" => count($this->enfermero_model->buscar(0,$buscar)),
         "cantidad" =>$cantidad
         
       );
       
       echo json_encode($data);
    }
+
    /******METODO PARA ELIMINAR A LOS DERECHOHABIENTES DE LA BASE DE DATOS *******/
    public function eliminarDerechohabiente()
    {
       if($this->session->userdata('tipo')==5){
        $id = $this->input->post('id');
-       $this->crudperfiles_model->eliminarDerechohabiente($id);
+       $this->crudperfiles_model->eliminarDerechohabiente(1,$id);
        //redirect('admin');
        return true;
        }

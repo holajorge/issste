@@ -9,10 +9,16 @@ class Pacientes_model extends CI_Model {
 /*******metodo que obtiene los pacientes que esten en espera para ser llamados a consultorio**********/
 function get_pacientesVistaEnfermero()
 {  
-  $query = $this->db-> query('SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno, cp.apellido_materno, tp.tipo ,cp.clasificacion, cp.go, cp.descripcion, cp.hora_llegada 
-      FROM consulta_paciente cp, tipo_paciente tp 
-      WHERE cp.tipo_paciente=tp.id_tipo_paciente and estado=1  
-      ORDER BY cp.clasificacion DESC, cp.hora_llegada ASC');
+  $query = $this->db-> query('
+     SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno, cp.apellido_materno, tp.tipo as tipo, cp.id_clasificacion_paciente as clasificacion,
+      
+       cp.go, cp.descripcion, cp.hora_llegada 
+      
+    FROM consulta_paciente cp, tipo_paciente tp
+    
+    WHERE id_estado=1 and tp.id_tipo_paciente=cp.id_tipo_paciente
+    
+    ORDER BY cp.hora_llegada ASC');
  
   if ($query -> num_rows() > 0){
     return $query;
@@ -25,27 +31,35 @@ function get_pacientesVistaEnfermero()
 function get_pacientesVistaConsulta()
 {  
   $query = $this->db-> query('
-    SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno,cp.tipo_paciente,cp.go, tp.tipo, cp.clasificacion, cp.descripcion, dc.nombre doctor, ct.nombre consultorio 
-    from consulta_paciente cp, paciente_espera pe, doctor dc, consultorio ct , tipo_paciente tp
-    where pe.id_consulta_paciente=cp.id_consulta_paciente and cp.tipo_paciente=tp.id_tipo_paciente and pe.id_doctor=dc.id_doctor and dc.id_consultorio=ct.id_consultorio and cp.estado=2 
+     SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno,cp.id_tipo_paciente as tipo_paciente,cp.go, tp.tipo, cp.id_clasificacion_paciente as clasificacion, cp.descripcion,
+       dc.nombre doctor, ct.nombre consultorio    
+     from consulta_paciente cp, paciente_espera pe, doctor dc, consultorio ct , tipo_paciente tp
+     where pe.id_consulta_paciente=cp.id_consulta_paciente and cp.id_tipo_paciente=tp.id_tipo_paciente and pe.id_doctor=dc.id_doctor 
+       and dc.id_consultorio=ct.id_consultorio and cp.id_estado=2 
 
     ');
  
-  if ($query -> num_rows() > 0){
-    return $query;
-  }else{
-   return false;
- }
+    if ($query -> num_rows() > 0){
+      return $query;
+    }else{
+     return false;
+   }
 }
 
 /********metodo que obtiene los datos de los pacientes que no se terminaron de consultar, esto es en el caso de que se corte la energia electrica en la clinica*********/
 function get_pacientesRecuperarConsulta($doct)
 {  
   $query = $this->db-> query('
-    SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno,tp.tipo, cp.folio,  cp.clasificacion, cp.descripcion,cp.hora_llegada,cp.rfc, dc.nombre doctor, ct.nombre consultorio from consulta_paciente cp, paciente_espera pe, doctor dc, consultorio ct, tipo_paciente tp where pe.id_consulta_paciente=cp.id_consulta_paciente and pe.id_doctor=dc.id_doctor and dc.id_consultorio=ct.id_consultorio and cp.tipo_paciente=tp.id_tipo_paciente and cp.estado=2 and dc.nombre="'.$doct.'"
+   SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno,tp.tipo, cp.folio,  cp.id_clasificacion_paciente as clasificacion, cp.descripcion,
+      cp.hora_llegada,cp.rfc
+      
+   FROM consulta_paciente cp,  tipo_paciente tp , doctor dt, consultorio ct
 
+   where tp.id_tipo_paciente=cp.id_tipo_paciente 
+         and cp.id_estado=2 
+         and ct.id_consultorio=dt.id_consultorio
+         and dt.nombre="'.$doct.'" 
     ');
- 
   if ($query -> num_rows() > 0){
     return $query;
   }else{
@@ -54,14 +68,26 @@ function get_pacientesRecuperarConsulta($doct)
 
 }
 /********se obtienen los datos para llamar a un paciente en pantalla*********/
-public function monitoreollamadaInsert($nombre,$apellido,$consultorio,$fecha)
+public function monitoreollamadaInsert($data)
 {
-   $query = $this->db->query("INSERT INTO `urgencias`.`monitoreollamadas` (`nombre`, `apellido`, `consultorio`, `fecha`) VALUES ('".$nombre."', '".$apellido."', '".$consultorio."','".$fecha."');");
+   // $query = $this->db->query("INSERT INTO `urgencias`.`monitoreollamadas` (`nombre`, `apellido`, `id_consultorio`, `fecha`) VALUES ('".$nombre."', '".$apellido."', '".$consultorio."','".$fecha."');");
+   $this->db->insert('monitoreollamadas', $data);
 }
+
 /*******metodo que obtiene los datos de los pacientes que fueron atendidos por dia**********/
 public function get_consultados_hoy($doct, $hoy)
 {
-    $query= $this->db->query('SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno, cp.sexo,cp.go, tp.tipo, cp.clasificacion, cp.hora_llegada,pc.tiempo, pc.hora_atendido  FROM consulta_paciente AS cp ,pacientes_consultados AS pc, clasificacion_paciente as cfp,tipo_paciente as tp WHERE cp.id_consulta_paciente = pc.id_consulta_paciete  and tp.id_tipo_paciente=cp.tipo_paciente and cfp.id_clasificacion_paciente=cp.clasificacion and pc.id_doctor="'.$doct.'"  AND cp.fecha>="'.$hoy.'"');
+    $query= $this->db->query('
+    SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno, cp.sexo,cp.go, tp.tipo, cp.id_clasificacion_paciente as clasificacion, cp.hora_llegada,pc.tiempo, pc.hora_atendido 
+
+    FROM consulta_paciente cp ,pacientes_consultados pc, clasificacion_paciente cfp,tipo_paciente tp 
+
+    WHERE cp.id_consulta_paciente = pc.id_consulta_paciente  
+          and tp.id_tipo_paciente=cp.id_tipo_paciente 
+          and cfp.id_clasificacion_paciente=cp.id_clasificacion_paciente
+          and pc.id_doctor="'.$doct.'" 
+          and cp.fecha="'.$hoy.'"');
+
      return $query;
 
 }
@@ -70,8 +96,17 @@ public function get_consultados_hoy($doct, $hoy)
 function get_pacientesRecuperarConsultaUR($doct)
 {  
   $query = $this->db-> query('
-     SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno,cp.folio, tp.tipo,cp.edad, cp.go, cp.clasificacion, cp.descripcion,cp.hora_llegada,cp.rfc, dc.nombre doctor, ct.nombre consultorio from consulta_paciente cp, paciente_espera pe, doctor dc, consultorio ct, tipo_paciente tp where  cp.tipo_paciente=tp.id_tipo_paciente  and pe.id_consulta_paciente=cp.id_consulta_paciente and pe.id_doctor=dc.id_doctor and dc.id_consultorio=ct.id_consultorio and cp.estado=2 and dc.nombre="'.$doct.'"
-                          ');
+     SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno,cp.folio, cp.descripcion,cp.hora_llegada,cp.rfc, cp.go, cp.id_clasificacion_paciente as clasificacion,cp.edad,
+     tp.tipo, dc.nombre doctor, ct.nombre consultorio 
+    
+     from consulta_paciente cp, paciente_espera pe, doctor dc, consultorio ct, tipo_paciente tp
+     
+     where  cp.id_tipo_paciente=tp.id_tipo_paciente  
+            and pe.id_consulta_paciente=cp.id_consulta_paciente 
+            and pe.id_doctor=dc.id_doctor 
+            and dc.id_consultorio=ct.id_consultorio 
+            and cp.id_estado=2 and dc.nombre="'.$doct.'"
+    ');
  
   if ($query -> num_rows() > 0){
     return $query;
@@ -83,32 +118,34 @@ function get_pacientesRecuperarConsultaUR($doct)
 function get_pacientesVistaDoctor()
 {  
   $query = $this->db-> query("
-          SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno, cp.rfc, cp.folio , tp.tipo, cp.go, cp.clasificacion, cp.descripcion, cp.hora_llegada  
+          SELECT cp.id_consulta_paciente, cp.nombre, cp.apellido_paterno, cp.rfc, cp.folio , tp.tipo, cp.go, cp.id_clasificacion_paciente as clasificacion, cp.descripcion, cp.hora_llegada  
           FROM consulta_paciente cp, tipo_paciente tp 
-          WHERE  cp.tipo_paciente=tp.id_tipo_paciente and  estado = 1 and cp.clasificacion<3 ORDER BY cp.hora_llegada ASC");
+          WHERE  cp.id_tipo_paciente=tp.id_tipo_paciente and  id_estado = 1 and cp.id_clasificacion_paciente<3 ORDER BY cp.hora_llegada ASC");
  
-  if ($query -> num_rows() > 0){
-    return $query;
+ if ($query -> num_rows() > 0){
+      return $query;
   }else{
-   return false;
- }
+     return false;
+  }
 }
 
 /*******metodo que obtiene los datos de los pacientes de estado de urgencia estos solo se imprime en la vista de pacientes**********/
 function get_pacientesRojo()
 {
 
- $query = $this->db-> query("SELECT cp.nombre, cp.apellido_paterno, pt.tipo,cp.folio, cp.go, cp.clasificacion, cp.rfc, cp.descripcion, cp.hora_llegada, cp.id_consulta_paciente, cp.edad  
-          FROM  consulta_paciente cp, tipo_paciente pt
-          WHERE  cp.tipo_paciente=pt.id_tipo_paciente  and estado = 1 and cp.clasificacion > 1
-          ORDER BY cp.clasificacion=3 DESC, cp.hora_llegada ASC
-          ");
+   $query = $this->db-> query("
+    SELECT cp.nombre, cp.apellido_paterno, pt.tipo, cp.folio, cp.go, cp.id_clasificacion_paciente as clasificacion, cp.rfc, cp.descripcion, cp.hora_llegada, 
+        cp.id_consulta_paciente, cp.edad  
+    FROM  consulta_paciente cp, tipo_paciente pt, clasificacion_paciente cfp
+    WHERE  cp.id_tipo_paciente=pt.id_tipo_paciente  and cp.id_estado = 1 and cp.id_clasificacion_paciente > 1 and cfp.id_clasificacion_paciente=cp.id_clasificacion_paciente
+   ORDER BY cp.id_clasificacion_paciente=3 DESC, cp.hora_llegada ASC
+    ");
 
- if ($query -> num_rows() > 0){
-  return $query;
-}else{
- return false;
-}
+   if ($query -> num_rows() > 0){
+    return $query;
+  }else{
+   return false;
+  }
 }
 
 /********metodo que elimina por completo al paciente en caso de que no asista al consultorio cuando sera llamado por el doctor*********/
@@ -160,7 +197,7 @@ function Cambiar_estado($estado, $id)
 {
 
 	$data = array(
-    'estado' => $estado,
+    'id_estado' => $estado,
     );
 
   $this->db->where('id_consulta_paciente', $id);
@@ -178,7 +215,7 @@ function Cambiar_estado_volver_Pantalla($estado, $id)
 {
 
   $data = array(
-    'estado' => $estado,
+    'id_estado' => $estado,
     );
 
   $this->db->where('id_consulta_paciente', $id);
@@ -192,11 +229,15 @@ function insertConsultaFaltantes($data)
 
 }
 /*******metodo que elimina a un paciente del proceso de espera o atencion**********/
-function eliminarConsultaEspera($id)
+function eliminarConsultaEspera($estado, $id, $baja)
 {
-
+   $data = array(
+    'baja' => $baja,
+    'id_estado' => $estado
+    );
   $this->db->where('id_consulta_paciente', $id);
-  return $this->db->delete('consulta_paciente'); 
+ return $this->db->update('consulta_paciente', $data);
+  // return $this->db->delete('consulta_paciente'); 
 
 }
 /********obtiene los datos de la tabla faltantes de los pacientes que no asistieron a su consulta y son imprimidos en una vista de la sesion del enfermero*********/

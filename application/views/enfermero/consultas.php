@@ -8,7 +8,7 @@
     <li class="active"><a href="<?php echo base_url();?>enfermero">EXISTENTE</a></li>
     <li><a href="<?php echo base_url();?>enfermero/registro">REGISTRAR DERECHOHABIENTE</a></li>            
     <li><a href="<?php echo base_url();?>enfermero/espera">EN ESPERA</a></li>
-    <li ><a href="<?php echo base_url();?>enfermero/consultorio"> CONSULTA</a></li>
+    <li ><a href="<?php echo base_url();?>enfermero/consultorio">EN CONSULTA</a></li>
     <li ><a href="<?php echo base_url();?>enfermero/no_asistio">FALTANTES</a></li>
   </ul>
   <ul class="nav navbar-nav navbar-right">

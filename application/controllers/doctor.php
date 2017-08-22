@@ -26,6 +26,7 @@ class Doctor extends CI_Controller {
      $datos['consultaa'] = $this->crudperfiles_model->get_doctor();
      $datos['nombre'] = $this->session->userdata('nombre');
      $datos['apellido'] = $this->session->userdata('apellido');
+
      $this->load->view('doctor/header_doctor');
      $this->load->view('doctor/doctorIndex', $datos);
      $this->load->view('doctor/footer_doctor');
@@ -47,7 +48,7 @@ class Doctor extends CI_Controller {
        $html= '<table class="table table-bordered">
      <thead>
       <tr>
-        <th class="doctor_tabla" >NOMBRE</th>
+        <th class="doctor_tabla" >NOMBREWE</th>
         <th class="doctor_tabla" >APELLIDO</th>
         <th class="doctor_tabla" >TIPO PACIENTE</th>
         <th class="doctor_tabla" >CLASIFICAIÓN</th>
@@ -73,6 +74,7 @@ class Doctor extends CI_Controller {
         <th><label>'.$fila->nombre.'</label></th>       
         <th><label>'.$fila->apellido_paterno.'</label></th>';   
         $goGlobla;          
+        
         $tipoP = $fila->go;
         if ($tipoP == 1) {
           $goGlobla = " / G-O";
@@ -373,7 +375,7 @@ class Doctor extends CI_Controller {
     $id_consulta_paciente= $this->input->post('id_consulta_paciete');
     $data = array(
       'id_doctor'   => $this->input->post('id_doctor'), 
-      'id_consulta_paciete'   => $this->input->post('id_consulta_paciete'),
+      'id_consulta_paciente'   => $this->input->post('id_consulta_paciete'),
       'descripcion' => $this->input->post('descripcion'),
       'hora_atendido' => $hora,
       'tiempo' => $this->input->post('hora_llegada')
@@ -392,23 +394,22 @@ class Doctor extends CI_Controller {
   {
    if($this->session->userdata('tipo')==1){
 
-    $id_consulta_paciente= $this->input->post('id_consulta_paciete');
-    $this->pacientes_model->Cambiar_estado_volver_Pantalla(1,$id_consulta_paciente);
-    $this->pacientes_model->delectPAcienteEspera($id_consulta_paciente);
+      $id_consulta_paciente= $this->input->post('id_consulta_paciete');
+      $this->pacientes_model->Cambiar_estado_volver_Pantalla(1,$id_consulta_paciente);
+      $this->pacientes_model->delectPAcienteEspera($id_consulta_paciente);
 
-    redirect('doctor');
-    return true;
-  }else{
-    redirect('login');
-  }
+      redirect('doctor');
+      return true;
+    }else{
+      redirect('login');
+    }
+
   }
 
 
   public function eliminar()
   {
    if($this->session->userdata('tipo')==1){
-
-     $id = $this->input->post('id_consulta_paciete');
 
      date_default_timezone_set('America/Cancun');
      $time = time();
@@ -431,7 +432,10 @@ class Doctor extends CI_Controller {
 
      $this->pacientes_model->insertConsultaFaltantes($faltantes);
 
-     $this->pacientes_model->eliminarConsultaEspera($id);
+     $id = $this->input->post('id_consulta_paciete');
+     $baja = "1";
+
+     $this->pacientes_model->eliminarConsultaEspera(3, $id, $baja);
 
      redirect('doctor');
      return true;
@@ -501,6 +505,7 @@ class Doctor extends CI_Controller {
     </thead>
 
     <tbody>';
+
       $base=base_url();
       foreach ($consultaa->result() as $fila):
         $html= $html.'     
@@ -572,10 +577,20 @@ class Doctor extends CI_Controller {
   {
     $nombre= $this->input->post('nombre');
     $apellido=$this->input->post('apellido');
-    $consultorio = $this->session->userdata('consultorio');
+    $consultorio = $this->session->userdata('id_consultorio');
     $time = time();
     $fechaActual=date("Y-m-d",$time);
-    $this->pacientes_model->monitoreollamadaInsert($nombre,$apellido,$consultorio,$fechaActual);
+
+    $data = array(
+
+      'nombre' => $nombre,
+      'apellido' => $apellido,
+      'id_consultorio' => $consultorio,
+      'fecha' => $fechaActual
+      
+      );
+
+    $this->pacientes_model->monitoreollamadaInsert($data);
   }
 
 

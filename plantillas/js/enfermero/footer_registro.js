@@ -1,7 +1,7 @@
 
 function base_url() {
   var pathparts = location.pathname.split('/');
-  if (location.host == '192.168.10.100') {
+  if (location.host == '192.168.0.13') {
           var url = location.origin+'/'+pathparts[1].trim('/')+'/'; // http://localhost/myproject/
       }else{
           var url = location.origin; // http://stackoverflow.com

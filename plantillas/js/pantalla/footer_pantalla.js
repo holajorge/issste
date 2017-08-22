@@ -1,7 +1,7 @@
 
 function base_url() {
 	var pathparts = location.pathname.split('/');
-	if (location.host == '192.168.10.100') {
+	if (location.host == '192.168.0.13') {
 	        var url = location.origin+'/'+pathparts[1].trim('/')+'/'; // http://localhost/myproject/
 	    }else{
 	        var url = location.origin; // http://stackoverflow.com
@@ -182,7 +182,7 @@ function chageMonitoreo(){
 
 	            		title: 'DERECHOHABIENTE:<br><br><strong style="color:#003399"><strong>'+arrayDatos[0]+" "+arrayDatos[1],
 	            		text: '<strong style="color:#ff704d"><strong>'+arrayDatos[2],
-	            		imageUrl: base_url() + "plantillas/img/logo.jpg",
+	            		imageUrl: base_url() + "plantillas/img/llamada.png",
 	            		timer: 4000,
 	            		showConfirmButton: false,
 	            		html: true

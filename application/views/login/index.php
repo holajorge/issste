@@ -25,7 +25,7 @@ background-size: cover;
             <p class="error"> <?php echo $error ?> </p>
             <div class="form-group">
                 <label for="exampleInputPassword1">Nombre de Usuario</label>
-                <input required type="text" name="usuario"  class="form-control" id="exampleInputPassword1" placeholder="Usuario">
+                <input required type="text" name="usuario"  class="form-control" id="exampleInputPassword1" placeholder="Usuario" autofocus>
             </div>
             <div class="form-group">
                 <label for="exampleInputPassword1">Contraseña</label>

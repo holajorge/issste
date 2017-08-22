@@ -47,7 +47,7 @@ class Login extends CI_Controller {
       $username = $this->input->post('usuario');
       $password = $this->input->post('password');
       
-      $fila =  $this->crudperfiles_model->usuario_por_usuario_password($username, $password);
+      $fila =  $this->crudperfiles_model->autentificarAdmin($username, $password);
 
       if($fila)
       {     
@@ -70,7 +70,7 @@ class Login extends CI_Controller {
             'id_doctor'   =>  $fila->id_doctor,
             'nombre'   =>  $fila->nombre,
             'apellido'   =>  $fila->apellido,
-            'consultorio' =>  $fila->id_consultorio,
+            'id_consultorio' =>  $fila->id_consultorio,
             'logueado' =>TRUE,
             'tipo'=>1
             );
@@ -92,7 +92,7 @@ class Login extends CI_Controller {
             'id_doctor'   =>  $fila->id_doctor,
             'nombre'   =>  $fila->nombre,
             'apellido'   =>  $fila->apellido,
-            'consultorio' =>  $fila->id_consultorio,
+            'id_consultorio' =>  $fila->id_consultorio,
             'logueado' =>TRUE,
             'tipo'=>4
             );
@@ -102,7 +102,7 @@ class Login extends CI_Controller {
 
       } 
       else{     
-       $this->session->set_flashdata('error', '<strong>Usuario o Contraseña</strong> Incorrecto*');
+       $this->session->set_flashdata('error', '<strong>Usuario o Contraseña Incorrecto</strong> *');
        redirect('login');
      }
    }else
